@@ -1,0 +1,52 @@
+// This is the Prisma schema file.
+
+// Import the necessary enum types
+
+// Enums
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+}
+
+// Models
+
+model User {
+    id           Int        @id @default(autoincrement())
+    name         String
+    email        String      @unique
+    password     String
+    contracts     Contract[]
+    role         Role        @default(USER)
+}
+
+model Contract {
+    id            Int           @id @default(autoincrement())
+    title         String
+    userId        Int
+    user          User          @relation(fields: [userId], references: [id])
+    payments       Payment[]
+    reminders      Reminder[]
+}
+
+model Payment {
+    id            Int            @id @default(autoincrement())
+    amount        Float
+    status        PaymentStatus
+    contractId    Int
+    contract      Contract        @relation(fields: [contractId], references: [id])
+}
+
+model Reminder {
+    id            Int         @id @default(autoincrement())
+    date          DateTime
+    description   String
+    contractId    Int
+    contract      Contract    @relation(fields: [contractId], references: [id])
+}
